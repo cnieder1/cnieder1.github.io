@@ -349,9 +349,130 @@ div.tocify {
 <p>Answers: Strongly Agree = 1 Moderately Agree = 2 Slightly Agree = 3 Neither Agree or Disagree = 4 Slightly Disagree = 5 Moderately Disagree = 6 Strongly Disagree = 7</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoXCJ3aXRoIGEgcC12YWx1ZSBncmVhdGVyIHRoYW4gLjA1LCB3ZSBjb25jbHVkZSB0aGF0IHRoZSB0d28gc3VydmV5cyBnZW5lcmF0ZWQgdGhlIHNhbWUgcmVzdWx0IGRpc3RyaWJ1dGlvbi5cIilcblxuYGBgIn0= -->
-<pre class="r"><code>print(&quot;with a p-value greater than .05, we conclude that the two surveys generated the same result distribution.&quot;)
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShjYXIpXG5gYGAifQ== -->
+<pre class="r"><code>library(car)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBjYXJEYXRhXG4ifQ== -->
+<pre><code>Loading required package: carData</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGYgPC0gcmVhZC5jc3YoZmlsZSA9IFwiUmF3X0RhdGEuY3N2XCIpXG5zZiA8LSByZWFkLmNzdihmaWxlID0gXCJSYXdfRGF0YTIuY3N2XCIpXG5kZiRBMU51bSA8LSBhcy5udW1lcmljKGRmJEExKVxuc2YkQTFOdW0gPC0gYXMubnVtZXJpYyhzZiRBMSlcblExQSA8LSBkZltkZlssIFwiUTFcIl09PVwiUm9hbWluZyBvdXRkb29yIGNhdHMgaGFybSB3aWxkbGlmZVwiLF1cblExQSA8LSBRMUFbLCBjKDEsMiwzLDEyOjE3KV1cblExQSRBMU51bSA8LSByZWNvZGUoUTFBJEExTnVtLFwiMT02OzI9MjszPTQ7ND01OzU9Mzs2PTc7Nz0xXCIpXG5RMUIgPC0gZGZbZGZbLCBcIlExXCJdPT1cIlJvYW1pbmcgb3V0ZG9vciBjYXRzIGRvIG5vdCBoYXJtIHdpbGRsaWZlXCIsXVxuUTFCIDwtIFExQlssIGMoMSwyLDMsMTI6MTcpXVxuUTFCJEExTnVtIDwtIHJlY29kZShRMUIkQTFOdW0sXCIxPTI7Mj02OzM9NDs0PTM7NT01OzY9MTs3PTdcIilcblExQTIgPC0gc2Zbc2ZbLCBcIlExXCJdPT1cIlJvYW1pbmcgb3V0ZG9vciBjYXRzIGhhcm0gd2lsZGxpZmVcIixdXG5RMUEyIDwtIFExQTJbLCBjKDEsMiwzLDEyOjE3KV1cblExQTIkQTFOdW0gPC0gcmVjb2RlKFExQTIkQTFOdW0sXCIxPTY7Mj0yOzM9NDs0PTU7NT0zOzY9Nzs3PTFcIilcblExQjIgPC0gc2Zbc2ZbLCBcIlExXCJdPT1cIlJvYW1pbmcgb3V0ZG9vciBjYXRzIGRvIG5vdCBoYXJtIHdpbGRsaWZlXCIsXVxuUTFCMiA8LSBRMUIyWywgYygxLDIsMywxMjoxNyldXG5RMUIyJEExTnVtIDwtIHJlY29kZShRMUIyJEExTnVtLFwiMT0yOzI9NjszPTQ7ND0zOzU9NTs2PTE7Nz03XCIpXG5BIDwtIGFzLm51bWVyaWMoUTFBJEExTnVtKVxuQiA8LSBhcy5udW1lcmljKFExQTIkQTFOdW0pXG5EYXRhIDwtIGRhdGEuZnJhbWUoXG4gICAgICAgV3RBbnN3ZXI9YyhBLCBCKSxcbiAgICAgICBRdWVzdGlvbiA9ZmFjdG9yKHJlcChjKFwiQVwiLCBcIkJcIiksIHRpbWVzPWMobGVuZ3RoKEEpLCBsZW5ndGgoQikpKSlcbiAgICAgICApXG5tIDwtIGFvdihXdEFuc3dlcn5RdWVzdGlvbixkYXRhID0gRGF0YSlcbnN1bW1hcnkobSlcbmBgYCJ9 -->
+<pre class="r"><code>df &lt;- read.csv(file = &quot;Raw_Data.csv&quot;)
+sf &lt;- read.csv(file = &quot;Raw_Data2.csv&quot;)
+df$A1Num &lt;- as.numeric(df$A1)
+sf$A1Num &lt;- as.numeric(sf$A1)
+Q1A &lt;- df[df[, &quot;Q1&quot;]==&quot;Roaming outdoor cats harm wildlife&quot;,]
+Q1A &lt;- Q1A[, c(1,2,3,12:17)]
+Q1A$A1Num &lt;- recode(Q1A$A1Num,&quot;1=6;2=2;3=4;4=5;5=3;6=7;7=1&quot;)
+Q1B &lt;- df[df[, &quot;Q1&quot;]==&quot;Roaming outdoor cats do not harm wildlife&quot;,]
+Q1B &lt;- Q1B[, c(1,2,3,12:17)]
+Q1B$A1Num &lt;- recode(Q1B$A1Num,&quot;1=2;2=6;3=4;4=3;5=5;6=1;7=7&quot;)
+Q1A2 &lt;- sf[sf[, &quot;Q1&quot;]==&quot;Roaming outdoor cats harm wildlife&quot;,]
+Q1A2 &lt;- Q1A2[, c(1,2,3,12:17)]
+Q1A2$A1Num &lt;- recode(Q1A2$A1Num,&quot;1=6;2=2;3=4;4=5;5=3;6=7;7=1&quot;)
+Q1B2 &lt;- sf[sf[, &quot;Q1&quot;]==&quot;Roaming outdoor cats do not harm wildlife&quot;,]
+Q1B2 &lt;- Q1B2[, c(1,2,3,12:17)]
+Q1B2$A1Num &lt;- recode(Q1B2$A1Num,&quot;1=2;2=6;3=4;4=3;5=5;6=1;7=7&quot;)
+A &lt;- as.numeric(Q1A$A1Num)
+B &lt;- as.numeric(Q1A2$A1Num)
+Data &lt;- data.frame(
+       WtAnswer=c(A, B),
+       Question =factor(rep(c(&quot;A&quot;, &quot;B&quot;), times=c(length(A), length(B))))
+       )
+m &lt;- aov(WtAnswer~Question,data = Data)
+summary(m)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICAgICAgICBEZiBTdW0gU3EgTWVhbiBTcSBGIHZhbHVlIFByKD5GKVxuUXVlc3Rpb24gICAgICAgMSAgICAgIDMgICAzLjI4MiAgIDAuOTU4ICAwLjMyOFxuUmVzaWR1YWxzICAgMTA1MCAgIDM1OTggICAzLjQyNyAgICAgICAgICAgICAgIFxuIn0= -->
+<pre><code>              Df Sum Sq Mean Sq F value Pr(&gt;F)
+Question       1      3   3.282   0.958  0.328
+Residuals   1050   3598   3.427               </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoXCJUaGUgcCB2YWx1ZSBpcyBncmVhdGVyIHRoYXQgLjA1IG1lYW5pbmcgdGhlIGRpc3RyaWJ1dGlvbnMgYXJlIHN0YXRpc3RpY2FsbHkgdGhlIHNhbWUuXCIpXG5gYGAifQ== -->
+<pre class="r"><code>print(&quot;The p value is greater that .05 meaning the distributions are statistically the same.&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiVGhlIHAgdmFsdWUgaXMgZ3JlYXRlciB0aGF0IC4wNSBtZWFuaW5nIHRoZSBkaXN0cmlidXRpb25zIGFyZSBzdGF0aXN0aWNhbGx5IHRoZSBzYW1lLlwiXG4ifQ== -->
+<pre><code>[1] &quot;The p value is greater that .05 meaning the distributions are statistically the same.&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2hhcGlyby50ZXN0KERhdGEkV3RBbnN3ZXIpXG5gYGAifQ== -->
+<pre class="r"><code>shapiro.test(Data$WtAnswer)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5cdFNoYXBpcm8tV2lsayBub3JtYWxpdHkgdGVzdFxuXG5kYXRhOiAgRGF0YSRXdEFuc3dlclxuVyA9IDAuOTMzODksIHAtdmFsdWUgPCAyLjJlLTE2XG4ifQ== -->
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  Data$WtAnswer
+W = 0.93389, p-value &lt; 2.2e-16</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoXCJGcm9tIHRoZSBvdXRwdXQsIHRoZSBwLXZhbHVlIDwgMC4wNSBpbXBseWluZyB0aGF0IHRoZSBkaXN0cmlidXRpb24gb2YgdGhlIGRhdGEgYXJlICBzaWduaWZpY2FudGx5IGRpZmZlcmVudCBmcm9tIG5vcm1hbCBkaXN0cmlidXRpb24uIEluIG90aGVyIHdvcmRzLCB3ZSBjYW4gTk9UIGFzc3VtZSB0aGUgbm9ybWFsaXR5LlwiKVxuYGBgIn0= -->
+<pre class="r"><code>print(&quot;From the output, the p-value &lt; 0.05 implying that the distribution of the data are  significantly different from normal distribution. In other words, we can NOT assume the normality.&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiRnJvbSB0aGUgb3V0cHV0LCB0aGUgcC12YWx1ZSA8IDAuMDUgaW1wbHlpbmcgdGhhdCB0aGUgZGlzdHJpYnV0aW9uIG9mIHRoZSBkYXRhIGFyZSAgc2lnbmlmaWNhbnRseSBkaWZmZXJlbnQgZnJvbSBub3JtYWwgZGlzdHJpYnV0aW9uLiBJbiBvdGhlciB3b3Jkcywgd2UgY2FuIE5PVCBhc3N1bWUgdGhlIG5vcm1hbGl0eS5cIlxuIn0= -->
+<pre><code>[1] &quot;From the output, the p-value &lt; 0.05 implying that the distribution of the data are  significantly different from normal distribution. In other words, we can NOT assume the normality.&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxua3J1c2thbC50ZXN0KFd0QW5zd2VyIH4gUXVlc3Rpb24sIGRhdGEgPSBEYXRhKSBcbmBgYCJ9 -->
+<pre class="r"><code>kruskal.test(WtAnswer ~ Question, data = Data) </code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5cdEtydXNrYWwtV2FsbGlzIHJhbmsgc3VtIHRlc3RcblxuZGF0YTogIFd0QW5zd2VyIGJ5IFF1ZXN0aW9uXG5LcnVza2FsLVdhbGxpcyBjaGktc3F1YXJlZCA9IDAuOTE1NDgsIGRmID0gMSwgcC12YWx1ZSA9IDAuMzM4N1xuIn0= -->
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  WtAnswer by Question
+Kruskal-Wallis chi-squared = 0.91548, df = 1, p-value = 0.3387</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoXCJ3aXRoIGEgcC12YWx1ZSBncmVhdGVyIHRoYW4gLjA1LCB3ZSBjb25jbHVkZSB0aGF0IHRoZSB0d28gc3VydmV5cyBnZW5lcmF0ZWQgdGhlIHNhbWUgcmVzdWx0IGRpc3RyaWJ1dGlvbi5cIilcbmBgYCJ9 -->
+<pre class="r"><code>print(&quot;with a p-value greater than .05, we conclude that the two surveys generated the same result distribution.&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwid2l0aCBhIHAtdmFsdWUgZ3JlYXRlciB0aGFuIC4wNSwgd2UgY29uY2x1ZGUgdGhhdCB0aGUgdHdvIHN1cnZleXMgZ2VuZXJhdGVkIHRoZSBzYW1lIHJlc3VsdCBkaXN0cmlidXRpb24uXCJcbiJ9 -->
+<pre><code>[1] &quot;with a p-value greater than .05, we conclude that the two surveys generated the same result distribution.&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuQSA8LSBhcy5udW1lcmljKFExQiRBMU51bSlcbkIgPC0gYXMubnVtZXJpYyhRMUIyJEExTnVtKVxuRGF0YSA8LSBkYXRhLmZyYW1lKFxuICAgICAgIFd0QW5zd2VyPWMoQSwgQiksXG4gICAgICAgUXVlc3Rpb24gPWZhY3RvcihyZXAoYyhcIkFcIiwgXCJCXCIpLCB0aW1lcz1jKGxlbmd0aChBKSwgbGVuZ3RoKEIpKSkpXG4gICAgICAgKVxubSA8LSBhb3YoV3RBbnN3ZXJ+UXVlc3Rpb24sZGF0YSA9IERhdGEpXG5zdW1tYXJ5KG0pXG5gYGAifQ== -->
+<pre class="r"><code>A &lt;- as.numeric(Q1B$A1Num)
+B &lt;- as.numeric(Q1B2$A1Num)
+Data &lt;- data.frame(
+       WtAnswer=c(A, B),
+       Question =factor(rep(c(&quot;A&quot;, &quot;B&quot;), times=c(length(A), length(B))))
+       )
+m &lt;- aov(WtAnswer~Question,data = Data)
+summary(m)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICAgICAgICBEZiBTdW0gU3EgTWVhbiBTcSBGIHZhbHVlIFByKD5GKVxuUXVlc3Rpb24gICAgICAgMSAgICAgIDQgICA0LjM5NiAgIDEuMjA4ICAwLjI3MlxuUmVzaWR1YWxzICAgMTA2NiAgIDM4NzggICAzLjYzOCAgICAgICAgICAgICAgIFxuIn0= -->
+<pre><code>              Df Sum Sq Mean Sq F value Pr(&gt;F)
+Question       1      4   4.396   1.208  0.272
+Residuals   1066   3878   3.638               </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoXCJUaGUgcCB2YWx1ZSBpcyBncmVhdGVyIHRoYXQgLjA1IG1lYW5pbmcgdGhlIGRpc3RyaWJ1dGlvbnMgYXJlIHN0YXRpc3RpY2FsbHkgdGhlIHNhbWUuXCIpXG5gYGAifQ== -->
+<pre class="r"><code>print(&quot;The p value is greater that .05 meaning the distributions are statistically the same.&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiVGhlIHAgdmFsdWUgaXMgZ3JlYXRlciB0aGF0IC4wNSBtZWFuaW5nIHRoZSBkaXN0cmlidXRpb25zIGFyZSBzdGF0aXN0aWNhbGx5IHRoZSBzYW1lLlwiXG4ifQ== -->
+<pre><code>[1] &quot;The p value is greater that .05 meaning the distributions are statistically the same.&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2hhcGlyby50ZXN0KERhdGEkV3RBbnN3ZXIpXG5gYGAifQ== -->
+<pre class="r"><code>shapiro.test(Data$WtAnswer)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5cdFNoYXBpcm8tV2lsayBub3JtYWxpdHkgdGVzdFxuXG5kYXRhOiAgRGF0YSRXdEFuc3dlclxuVyA9IDAuOTA4MTcsIHAtdmFsdWUgPCAyLjJlLTE2XG4ifQ== -->
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  Data$WtAnswer
+W = 0.90817, p-value &lt; 2.2e-16</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoXCJGcm9tIHRoZSBvdXRwdXQsIHRoZSBwLXZhbHVlIDwgMC4wNSBpbXBseWluZyB0aGF0IHRoZSBkaXN0cmlidXRpb24gb2YgdGhlIGRhdGEgYXJlICBzaWduaWZpY2FudGx5IGRpZmZlcmVudCBmcm9tIG5vcm1hbCBkaXN0cmlidXRpb24uIEluIG90aGVyIHdvcmRzLCB3ZSBjYW4gTk9UIGFzc3VtZSB0aGUgbm9ybWFsaXR5LlwiKVxuYGBgIn0= -->
+<pre class="r"><code>print(&quot;From the output, the p-value &lt; 0.05 implying that the distribution of the data are  significantly different from normal distribution. In other words, we can NOT assume the normality.&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiRnJvbSB0aGUgb3V0cHV0LCB0aGUgcC12YWx1ZSA8IDAuMDUgaW1wbHlpbmcgdGhhdCB0aGUgZGlzdHJpYnV0aW9uIG9mIHRoZSBkYXRhIGFyZSAgc2lnbmlmaWNhbnRseSBkaWZmZXJlbnQgZnJvbSBub3JtYWwgZGlzdHJpYnV0aW9uLiBJbiBvdGhlciB3b3Jkcywgd2UgY2FuIE5PVCBhc3N1bWUgdGhlIG5vcm1hbGl0eS5cIlxuIn0= -->
+<pre><code>[1] &quot;From the output, the p-value &lt; 0.05 implying that the distribution of the data are  significantly different from normal distribution. In other words, we can NOT assume the normality.&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxua3J1c2thbC50ZXN0KFd0QW5zd2VyIH4gUXVlc3Rpb24sIGRhdGEgPSBEYXRhKSBcbmBgYCJ9 -->
+<pre class="r"><code>kruskal.test(WtAnswer ~ Question, data = Data) </code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5cdEtydXNrYWwtV2FsbGlzIHJhbmsgc3VtIHRlc3RcblxuZGF0YTogIFd0QW5zd2VyIGJ5IFF1ZXN0aW9uXG5LcnVza2FsLVdhbGxpcyBjaGktc3F1YXJlZCA9IDEuMTY2OSwgZGYgPSAxLCBwLXZhbHVlID0gMC4yOFxuIn0= -->
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  WtAnswer by Question
+Kruskal-Wallis chi-squared = 1.1669, df = 1, p-value = 0.28</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoXCJ3aXRoIGEgcC12YWx1ZSBncmVhdGVyIHRoYW4gLjA1LCB3ZSBjb25jbHVkZSB0aGF0IHRoZSB0d28gc3VydmV5cyBnZW5lcmF0ZWQgdGhlIHNhbWUgcmVzdWx0IGRpc3RyaWJ1dGlvbi5cIilcbmBgYCJ9 -->
+<pre class="r"><code>print(&quot;with a p-value greater than .05, we conclude that the two surveys generated the same result distribution.&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwid2l0aCBhIHAtdmFsdWUgZ3JlYXRlciB0aGFuIC4wNSwgd2UgY29uY2x1ZGUgdGhhdCB0aGUgdHdvIHN1cnZleXMgZ2VuZXJhdGVkIHRoZSBzYW1lIHJlc3VsdCBkaXN0cmlidXRpb24uXCJcbiJ9 -->
 <pre><code>[1] &quot;with a p-value greater than .05, we conclude that the two surveys generated the same result distribution.&quot;</code></pre>
